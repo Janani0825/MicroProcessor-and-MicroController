@@ -1,0 +1,500 @@
+--------------------------------------------------
+SORTING OF AN ARRAY:
+-----------------------------------------------------------
+
+
+        OUTPUT 2500AD
+.ORG 2000H
+DATA SEGMENT
+ARRAY DW 0000H,0004H,0001H,0003H,0002H
+COUNT EQU 0005H
+DATA ENDS
+CODE SEGMENT
+        ASSUME CS:CODE,DS:DATA
+        MOV AX,DATA
+        MOV DS,AX
+        MOV DX,COUNT
+        DEC DX
+L2: MOV CX,DX
+        MOV SI,OFFSET ARRAY
+L1: MOV AX,[SI]
+        CMP AX,2[SI]
+        JC L3
+        XCHG AX,2[SI]
+        XCHG AX,[SI]
+L3: INC SI
+        INC SI
+        LOOP L1
+        DEC DX
+        JNC L2
+        HLT
+CODE ENDS
+END
+--------------------------------------------------------
+SEPERATE ODD AND EVEN NUMBERS IN AN ARRAY:
+--------------------------------------------------------
+
+
+                OUTPUT 2500AD
+.ORG 2000H
+DATA SEGMENT
+ARRAY DW 0005H,0008H,0003H,0004H
+ODD DW 0000H,0000H
+EVEN1 DW 0000H,0000H
+COUNT DB 04H
+DATA ENDS
+CODE SEGMENT
+        ASSUME CS:CODE,DS:DATA
+        MOV AX,DATA
+        MOV DS,AX
+        MOV CL,COUNT
+        LEA SI,ARRAY
+        LEA DI,EVEN1
+        LEA BX,ODD
+L2: MOV AX,[SI]
+        MOV CH,02H
+        DIV CH
+        CMP AH,00H
+        JZ L1
+        MOV [BX],AX
+        INC BX
+        INC BX
+    JMP L3
+L1:
+        MOV [DI],AX
+        INC DI
+        INC DI
+L3:     INC SI
+        INC SI
+        DEC CL
+        JNZ L2
+        HLT
+CODE ENDS
+END
+---------------------------------------------
+ARRAY SEARCH:
+--------------------------------------------
+
+                OUTPUT 2500AD
+.ORG 2000H
+DATA SEGMENT
+ARRAY DW 0000H,0002H,0004H,0006H,0008H
+COUNT DB 05H
+KEY   DB 06H
+RES   DB 00H
+DATA ENDS
+CODE SEGMENT
+    ASSUME CS:CODE, DS:DATA
+    MOV AX,DATA
+    MOV DS,AX
+    MOV AX,KEY
+    MOV CL,COUNT
+    LEA SI,ARRAY
+    MOV BL,00H
+L2:
+    CMP AX,[SI]
+    JNZ L1
+    INC BL
+L1:
+    ADD SI,2
+    LOOP L2
+    MOV RES,BL
+    HLT
+CODE ENDS
+END
+---------------------------------------------------------
+STRING COMPARISON:
+-----------------------------------------------------------
+
+                OUTPUT 2500AD
+.ORG 2000H
+DATA SEGMENT
+STRING1 DB "HELLO"
+STRING2 DB "HEO"
+COUNT EQU 05H
+RES DB 00H
+DATA ENDS
+CODE SEGMENT
+        ASSUME CS:CODE,DS:DATA,ES:DATA
+        MOV AX,DATA
+        MOV DS,AX
+        MOV ES,AX
+        CLD
+        MOV CL,COUNT
+        LEA SI,STRING1
+        LEA DI,STRING2
+L2: CMPSB
+        JZ L1
+        MOV RES,00H
+        JMP L3
+L1:     DEC CL
+        JNZ L2
+        MOV RES,01H
+L3: HLT
+CODE ENDS
+ENDS
+----------------------------------------------------------------
+OCCURANCE OF A CHARACTER IN A STRING:
+--------------------------------------------------------------------
+
+                                OUTPUT 2500AD
+.ORG 2000H
+DATA SEGMENT
+STRING1 DB "HELLO"
+STRING2 DB "O"
+COUNT EQU 05H
+RES DB 00H
+DATA ENDS
+CODE SEGMENT
+        ASSUME CS:CODE,DS:DATA,ES:DATA
+        MOV AX,DATA
+        MOV DS,AX
+        MOV ES,AX
+        MOV CL,COUNT
+        LEA DI,STRING1
+        MOV AL,STRING2
+L2: CMP [DI],AL
+        JNZ L1
+        MOV RES,01H
+        JMP L3
+
+L1:     INC DI
+        DEC CL
+        JNZ L2
+L3: HLT
+CODE ENDS
+ENDS
+-----------------------------------------------------------
+PALINDROME:
+-----------------------------------------------------------
+
+
+                OUTPUT 2500AD
+.ORG 2000H
+DATA SEGMENT
+STRING1 DB "HELLO"
+STRING2 DB "     "
+COUNT DW 0005H
+RES DB 00H
+DATA ENDS
+CODE SEGMENT
+        ASSUME CS:CODE,DS:DATA,ES:DATA
+        MOV AX,DATA
+        MOV DS,AX
+        MOV ES,AX
+        LEA SI,STRING1
+        LEA DI,STRING2
+        MOV CX,COUNT
+        ADD SI,0004H
+L5:     MOV AL,[SI]
+        MOV [DI],AL
+        INC DI
+        DEC SI
+        LOOP L5
+        LEA SI,STRING1
+        LEA DI,STRING2
+        MOV CX,COUNT
+        CLD
+L1: CMPSB
+    JZ L2
+        MOV RES,00H
+        JMP L3
+L2:
+        DEC CX
+    JNZ L1
+        MOV RES,01H
+L3: HLT
+CODE ENDS
+END
+----------------------------------------------------------------
+
+
+
+[24bcs076@mepcolinux mp]$cat ex3.prn
+MICROPROCESSOR AND MICROCONTROLLERS LABORATORY-23CS451
+````````````````````````````````````````````````````````
+PREPARED BY:
+            ISWARYALAKSHMI S (24BCS076)
+            JANANI S         (24BCS077)
+--------------------------------------------------------
+EXERCISE: 3
+DATE:     10-02-2026
+TITLE:    SIMPLE 8086 PROGRAMMING WITH
+          BIOS AND DOS INTERRUPTS
+--------------------------------------------------
+1.TO PRINT "I"
+--------------------------------------------------
+
+cODE SEGMENT
+                ASSUME CS:CODE
+START:
+        MOV AH,02H
+        MOV BH,00H
+        MOV DH,03H
+        MOV DL,02H
+        INT 10H
+        MOV AH,0AH
+        MOV AL,'I'
+        MOV DH,02H
+        MOV CX,0002H
+        INT 10H
+        MOV AH,4CH
+        INT 21H
+CODE ENDS
+END
+-------------------------------------------------
+2.FILE READ AND WRITE
+-------------------------------------------------
+DATA SEGMENT
+FN DB "TEXT.TXT"
+MSG DB "HELLOWORLD","$"
+BUFFER DB 0AH DUP(00H),"$"
+DATA ENDS
+CODE SEGMENT
+        ASSUME CS:CODE,DS:DATA,ES:DATA
+START:
+        MOV AX,DATA
+        MOV DS,AX
+        MOV ES,AX
+        MOV AH,3CH
+        MOV CX,0000H
+        MOV DX, OFFSET FN
+        INT 21H
+        MOV BX,AX
+        MOV AH,40H
+        MOV CX,0AH
+        MOV DX, OFFSET MSG
+        INT 21H
+        MOV AH,3H
+        INT 21H
+        MOV AH,3DH
+        LEA DX,FN
+        INT 21H
+        MOV BX,AX
+        MOV AH,3FH
+        MOV DX, OFFSET BUFFER
+        MOV CX,0AH
+        MOV AH,09H
+        MOV DX, OFFSET MSG
+        INT 21H
+        MOV AH,4CH
+        INT 21H
+CODE ENDS
+END
+----------------------------------------------
+3.STRING COMPARISION
+-------------------------------------------------
+
+DATA SEGMENT
+STR1 DB "HI","$"
+STR2 DB "HI","$"
+COUNT DB 02H
+OUT1 DB "EQUAL","$"
+OUT2 DB "NOT EQUAL","$"
+DATA ENDS
+CODE SEGMENT
+        ASSUME CS:CODE,DS:DATA,ES:DATA
+START:
+        MOV AX,DATA
+        MOV DS,AX
+        MOV ES,AX
+        LEA SI,STR1
+        LEA DI,STR2
+        MOV CX,02H
+        CLD
+        REPE CMPSB
+        JZ L1
+        MOV AH,09H
+        MOV DX,OFFSET OUT2
+        INT 21H
+        JMP L4
+L1:     MOV AH,09H
+        MOV DX,OFFSET OUT1
+        INT 21H
+L4: MOV AH,4CH
+        INT 21H
+CODE ENDS
+END
+----------------------------------------------
+4.TO PRINT THE PATTERN
+           *
+          ***
+           *
+           *
+          ***
+---------------------------------------------
+
+
+CODE SEGMENT
+    ASSUME CS:CODE
+START:
+    MOV AH,00H
+    MOV AL,03H
+    INT 10H
+    MOV AH,02H
+    MOV BH,00H
+    MOV DH,05H
+    MOV DL,10H
+    INT 10H
+    MOV AH,09H
+    MOV AL,'*'
+    MOV BH,00H
+    MOV BL,07H
+    MOV CX,0001H
+    INT 10H
+    MOV AH,02H
+    MOV BH,00H
+    MOV DH,06H
+    MOV DL,0FH
+    INT 10H
+    MOV AH,09H
+    MOV AL,'*'
+    MOV BH,00H
+    MOV BL,07H
+    MOV CX,0003H
+    INT 10H
+    MOV AH,02H
+    MOV BH,00H
+    MOV DH,07H
+    MOV DL,10H
+    INT 10H
+    MOV AH,09H
+    MOV AL,'*'
+    MOV BH,00H
+    MOV BL,07H
+    MOV CX,0001H
+    INT 10H
+    MOV AH,02H
+    MOV BH,00H
+    MOV DH,08H
+    MOV DL,10H
+    INT 10H
+    MOV AH,09H
+    MOV AL,'*'
+    MOV BH,00H
+    MOV BL,07H
+    MOV CX,0001H
+    INT 10H
+    MOV AH,02H
+    MOV BH,00H
+    MOV DH,09H
+    MOV DL,0FH
+    INT 10H
+    MOV AH,09H
+    MOV AL,'*'
+    MOV BH,00H
+    MOV BL,07H
+    MOV CX,0003H
+    INT 10H
+    MOV AH,4CH
+    INT 21H
+CODE ENDS
+END
+------------------------------------------------------
+
+[24bcs076@mepcolinux mp]$cat ex4.prn
+cat: ex4.prn: No such file or directory
+[24bcs076@mepcolinux mp]$ls
+ex1.prn  ex2.prn  ex3.prn  ex5.prn  ex6.prn  ex7.prn  ex8.prn  exe4.prn
+[24bcs076@mepcolinux mp]$cat ex4e.prn
+cat: ex4e.prn: No such file or directory
+[24bcs076@mepcolinux mp]$cat exe4.prn
+MICROPROCESSOR AND MICROCONTROLLERS LABORATORY-23CS451
+````````````````````````````````````````````````````````
+PREPARED BY:
+            ISWARYALAKSHMI S (24BCS076)
+            JANANI S         (24BCS077)
+--------------------------------------------------------
+EXERCISE: 4
+DATE:     17-02-2026
+TITLE:    INTERFACING AND PROGRAMMING LED'S USING 8255
+--------------------------------------------------------
+1.7-SEGMENT DISPLAY
+--------------------------------------------------------
+                OUTPUT 2500AD
+.ORG 2000H
+DATA SEGMENT
+LIST DB 3FH,06H,5BH,4FH,66H,6DH,7DH,07H,7FH,6FH,77H,7FH,39H,3FH,79H,71H
+COUNT DB 10H
+DATA ENDS
+CODE SEGMENT
+        ASSUME CS:DATA,DS:DATA
+START:
+        MOV AX,DATA
+        MOV DS,AX
+        MOV AL,80H
+        MOV DX,FFE6H
+        OUT DX,AL
+REPEAT:
+        MOV SI,OFFSET LIST
+        MOV CL,COUNT
+L1:
+        MOV AL,[SI]
+        MOV DX,FFE0H
+        OUT DX,AL
+        CALL DELAY
+        INC SI
+        DEC CL
+        JNZ L1
+        JMP REPEAT
+DELAY:
+        MOV AH,15H
+L3:
+        MOV BX,AAAAH
+L2:
+        DEC BX
+        JNZ L2
+        DEC AH
+        JNZ L3
+        RET
+CODE ENDS
+END
+
+---------------------------------------------------------------
+2. 1 1
+   B E
+   C S
+---------------------------------------------------------------
+                OUTPUT 2500AD
+.ORG 2000H
+DATA SEGMENT
+LIST1 DB 06H,7FH,39H
+LIST2 DB 06H,79H,6DH
+COUNT DB 03H
+DATA ENDS
+CODE SEGMENT
+        ASSUME CS:CODE, DS:DATA
+START:
+        MOV AX,DATA
+        MOV DS,AX
+        MOV AL,80H
+        MOV DX,FFE6H
+        OUT DX,AL
+REPEAT:
+        LEA SI, LIST1
+        LEA DI,LIST2
+        MOV CL,03H
+L2:     MOV AL,[SI]
+        MOV DX,FFE0H
+        OUT DX,AL
+        MOV AL,[DI]
+        MOV DX,FFE2H
+        OUT DX,AL
+        CALL DELAY
+        INC SI
+        INC DI
+        DEC CL
+        JNZ L2
+        JMP REPEAT
+DELAY:
+        MOV AH,05H
+L4:
+        MOV BX,AAAAH
+L3:
+        DEC BX
+        JNZ L3
+        DEC AH
+        JNZ L4
+        RET
+CODE ENDS
+END
