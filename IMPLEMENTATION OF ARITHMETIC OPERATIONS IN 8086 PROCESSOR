@@ -1,0 +1,134 @@
+---------------------------------------------------------
+PROGRAM 1: 16-BIT ADDITION
+``````````````````````````````````````````````````````````
+                OUTPUT 2500AD
+.ORG 2000H
+DATA SEGMENT
+NUM1 DW AAAAH
+NUM2 DW BBBBH
+SUM DW 0000H
+CARRY DB 00H
+DATA ENDS
+CODE SEGMENT
+        ASSUME CS:CODE,DS:DATA
+        MOV AX,DATA
+        MOV DS ,AX
+        MOV CL,00H
+        MOV AX,NUM1
+        MOV BX,NUM2
+        ADD AX,BX
+        JNC L1
+        INC CL
+L1: MOV SUM,AX
+        MOV CARRY,CL
+CODE ENDS
+END
+----------------------------------------------------
+PROGRAM 2:16-BIT SUBTRACTION
+-----------------------------------------------------
+                OUTPUT 2500AD
+.ORG 2000H
+DATA SEGMENT
+NUM1 DW AAAAH
+NUM2 DW BBBBH
+SUB DW 0000H
+BORROW DB 00H
+DATA ENDS
+CODE SEGMENT
+        ASSUME CS:CODE,DS:DATA
+        MOV AX,DATA
+        MOV DS ,AX
+        MOV CL,00H
+        MOV AX,NUM1
+        SUB AX,NUM2
+        JNC L1
+        INC CL
+L1: MOV SUB,AX
+        MOV BORROW,CL
+CODE ENDS
+END
+-------------------------------------------------
+PROGRAM 3:16-BIT MULTIPLICATION
+-----------------------------------------------
+                OUTPUT 2500AD
+.ORG 2000H
+DATA SEGMENT
+NUM1 DW AAAAH
+NUM2 DW BBBBH
+MUL1 DW 0000H
+MUL2 DW 0000H
+DATA ENDS
+CODE SEGMENT
+        ASSUME CS:CODE,DS:DATA
+        MOV AX,DATA
+        MOV DS ,AX
+        MOV AX,NUM1
+        MOV BX,NUM2
+        MUL BX
+        MOV MUL1,AX
+        MOV MUL2,DX
+CODE ENDS
+END
+---------------------------------------------------
+PROGRAM 4:16-BIT DIVISION
+---------------------------------------------------
+                OUTPUT 2500AD
+.ORG 2000H
+DATA SEGMENT
+NUM1 DW 1111H
+NUM2 DW 0002H
+QUO DW 0000H
+REM DW 0000H
+DATA ENDS
+CODE SEGMENT
+        ASSUME CS:CODE,DS:DATA
+        MOV AX,DATA
+        MOV DS ,AX
+        MOV DX,0000H
+        MOV AX,NUM1
+        MOV BX,NUM2
+        DIV BX
+        MOV QUO,AX
+        MOV REM,DX
+CODE ENDS
+END
+
+----------------------------------------
+PROGRAM 5:A^2-B^2/A-B
+------------------------------------------
+                OUTPUT 2500AD
+.ORG 3000H
+DATA SEGMENT
+NO1 DB EEH
+NO2 DB BBH
+ANS1 DW 0000H
+ANS2 DW 0000H
+ANS3 DW 0000H
+ANS4 DB 00H
+RES DB 00H
+RES1 DB 00H
+DATA ENDS
+CODE SEGMENT
+        ASSUME CS:CODE,DS:DATA
+START:
+        MOV AX,DATA
+        MOV DS,AX
+        MOV AL,NO1
+        MUL AL
+        MOV ANS1,AX
+        MOV AL,NO2
+        MUL AL
+        MOV ANS2,AX
+        MOV AX,ANS1
+        SUB AX,ANS2
+        MOV ANS3,AX
+        MOV BL,NO1
+        SUB BL,NO2
+        MOV ANS4,BL
+        MOV AX,ANS3
+        MOV CL,ANS4
+        DIV CL
+        MOV RES,AL
+        MOV RES1,AH
+CODE ENDS
+END
